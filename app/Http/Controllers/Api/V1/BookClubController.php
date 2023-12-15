@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBookClubRequest;
 use App\Http\Requests\UpdateBookClubRequest;
+use App\Http\Resources\BookClubResource;
 use App\Models\BookClub;
 
 class BookClubController extends Controller
@@ -13,15 +15,7 @@ class BookClubController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return BookClubResource::collection(BookClub::all());
     }
 
     /**
@@ -29,7 +23,9 @@ class BookClubController extends Controller
      */
     public function store(StoreBookClubRequest $request)
     {
-        //
+        $bookClub = BookClub::create($request->validated());
+
+        return BookClubResource::make($bookClub);
     }
 
     /**
@@ -37,23 +33,18 @@ class BookClubController extends Controller
      */
     public function show(BookClub $bookClub)
     {
-        //
+        return BookClubResource::make($bookClub);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(BookClub $bookClub)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateBookClubRequest $request, BookClub $bookClub)
     {
-        //
+        $bookClub->update($request->validated());
+        return BookClubResource::make($bookClub);
     }
 
     /**
@@ -61,6 +52,8 @@ class BookClubController extends Controller
      */
     public function destroy(BookClub $bookClub)
     {
-        //
+        $bookClub->delete();
+
+        return response()->noContent();
     }
 }
