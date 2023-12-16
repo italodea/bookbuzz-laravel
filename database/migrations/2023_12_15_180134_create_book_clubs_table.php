@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('book_clubs', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('photo_url');
+            $table->text('description');
+            $table->unsignedBigInteger('owner_id');
+            $table->foreign('owner_id')->references('id')->on('users');
+            $table->boolean('is_private')->default(false);
             $table->timestamps();
         });
     }
