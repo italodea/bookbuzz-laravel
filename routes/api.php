@@ -16,13 +16,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::prefix('v1')->group(function () {
+    Route::post('/register', [UserController::class, 'register']);
+    Route::post('/login', [UserController::class, 'login']);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
-
-
     Route::prefix('v1')->group(function () {
-        Route::post('/register', [UserController::class, 'register']);
-        Route::post('/login', [UserController::class, 'login']);
-
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/current-user', [UserController::class, 'getCurrentUserData']);
             Route::get('/check-token-validity', [UserController::class, 'checkTokenValidity']);
