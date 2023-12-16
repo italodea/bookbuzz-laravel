@@ -1,9 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AccessTokenController;
 use App\Http\Controllers\Api\V1\BookClubController;
+use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,4 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
     Route::apiResource('/bookClub', BookClubController::class);
+    Route::post('/token', [AccessTokenController::class, 'store']);
+    Route::post('/register', [UserController::class, 'register']);
+    Route::post('/login', [UserController::class, 'login']);
+    Route::middleware('auth:sanctum')->get('/current-user', [UserController::class, 'getCurrentUserData']);
+    Route::middleware('auth:sanctum')->get('/check-token-validity', [UserController::class, 'checkTokenValidity']);
 });
