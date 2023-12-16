@@ -13,7 +13,7 @@ class BookClubPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class BookClubPolicy
      */
     public function view(User $user, BookClub $bookClub): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class BookClubPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->isAuthenticated();
     }
 
     /**
@@ -37,7 +37,7 @@ class BookClubPolicy
      */
     public function update(User $user, BookClub $bookClub): bool
     {
-        //
+        return $user->id === $bookClub->owner_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class BookClubPolicy
      */
     public function delete(User $user, BookClub $bookClub): bool
     {
-        //
+        return $user->id === $bookClub->owner_id;
     }
 
     /**
@@ -53,7 +53,7 @@ class BookClubPolicy
      */
     public function restore(User $user, BookClub $bookClub): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -61,6 +61,6 @@ class BookClubPolicy
      */
     public function forceDelete(User $user, BookClub $bookClub): bool
     {
-        //
+        return $user->id === $bookClub->owner_id;
     }
 }
