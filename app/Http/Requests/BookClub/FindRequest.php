@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\BookClub;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateBookClubRequest extends FormRequest
+class FindRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return true; // anyone can search for book clubs
     }
 
     /**
@@ -21,12 +21,11 @@ class UpdateBookClubRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
-            'name' => 'sometimes|string|max:30',
-            'photo_url' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string|max:1024',
-            'is_private' => 'sometimes|boolean',
+            'name' => 'nullable|string|max:255',
+            'owner' => 'nullable|integer|exists:users,id',
+            'page' => 'nullable|integer|min:1',
+            'limit' => 'nullable|integer|min:1|max:100',
         ];
     }
 }

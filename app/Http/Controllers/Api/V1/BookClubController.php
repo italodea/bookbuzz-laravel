@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\FindBookClubRequest;
-use App\Http\Requests\StoreBookClubRequest;
-use App\Http\Requests\UpdateBookClubRequest;
+use App\Http\Requests\BookClub\FindRequest;
+use App\Http\Requests\BookClub\StoreRequest;
+use App\Http\Requests\BookClub\UpdateRequest;
 use App\Http\Resources\BookClubResource;
 use App\Models\BookClub;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -16,7 +16,7 @@ class BookClubController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(FindBookClubRequest $request)
+    public function index(FindRequest $request)
     {
         $query = BookClub::with('owner');
 
@@ -38,7 +38,7 @@ class BookClubController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBookClubRequest $request)
+    public function store(StoreRequest $request)
     {
         $validatedData = $request->validated();
 
@@ -63,7 +63,7 @@ class BookClubController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBookClubRequest $request, BookClub $bookClub)
+    public function update(UpdateRequest $request, BookClub $bookClub)
     {
         try {
             $this->authorize('update', $bookClub);
