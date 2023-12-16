@@ -16,15 +16,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:sanctum')->group(function () {
 
-Route::prefix('v1')->group(function () {
-    Route::apiResource('/bookClub', BookClubController::class);
-    Route::post('/token', [AccessTokenController::class, 'store']);
-    Route::post('/register', [UserController::class, 'register']);
-    Route::post('/login', [UserController::class, 'login']);
-    Route::middleware('auth:sanctum')->get('/current-user', [UserController::class, 'getCurrentUserData']);
-    Route::middleware('auth:sanctum')->get('/check-token-validity', [UserController::class, 'checkTokenValidity']);
+
+    Route::prefix('v1')->group(function () {
+        Route::post('/register', [UserController::class, 'register']);
+        Route::post('/login', [UserController::class, 'login']);
+
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::get('/current-user', [UserController::class, 'getCurrentUserData']);
+            Route::get('/check-token-validity', [UserController::class, 'checkTokenValidity']);
+            Route::apiResource('/bookClub', BookClubController::class);
+        });
+    });
 });

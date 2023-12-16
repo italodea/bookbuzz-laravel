@@ -17,9 +17,9 @@ class BookClubResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'photo_url' => $this->photo_url,
+            'photo_url' => $this->when($this->photo_url, $this->photo_url),
             'description' => $this->description,
-            'owner_id' => $this->owner_id,
+            'owner' => new UserResource($this->whenLoaded('owner')),
         ];
     }
 }

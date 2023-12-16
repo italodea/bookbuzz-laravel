@@ -3,16 +3,15 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class StoreBookClubRequest extends FormRequest
+class FindBookClubRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return true; // anyone can search for book clubs
     }
 
     /**
@@ -22,14 +21,11 @@ class StoreBookClubRequest extends FormRequest
      */
     public function rules(): array
     {
-        $user = Auth::user();
-
         return [
-            'name' => 'required|string|max:30',
-            'photo_url' => 'required|string|max:255',
-            'description' => 'required|string|max:1024',
-            'is_private' => 'required|boolean',
-            'owner_id' => 'sometimes|exists:users,id',
+            'name' => 'nullable|string|max:255',
+            'owner' => 'nullable|integer|exists:users,id',
+            'page' => 'nullable|integer|min:1',
+            'limit' => 'nullable|integer|min:1|max:100',
         ];
     }
 }

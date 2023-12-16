@@ -3,19 +3,36 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FindBookClubRequest;
 use App\Http\Requests\StoreBookClubRequest;
 use App\Http\Requests\UpdateBookClubRequest;
 use App\Http\Resources\BookClubResource;
 use App\Models\BookClub;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Auth;
 
 class BookClubController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(FindBookClubRequest $request)
     {
-        return BookClubResource::collection(BookClub::all());
+        $query = BookClub::with('owner');
+
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->input('name') . '%');
+        }
+
+        if ($request->filled('owner')) {
+            $query->whereHas('owner_id', function ($query) use ($request) {
+                $query->where('id', $request->input('owner'));
+            });
+        }
+
+        $bookClubs = $query->paginate($request->input('limit') ?? 10);
+
+        return BookClubResource::collection($bookClubs);
     }
 
     /**
@@ -23,16 +40,21 @@ class BookClubController extends Controller
      */
     public function store(StoreBookClubRequest $request)
     {
-        $bookClub = BookClub::create($request->validated());
+        $validatedData = $request->validated();
 
+        $validatedData['owner_id'] = Auth::id();
+
+        $bookClub = BookClub::create($validatedData);
+        $bookClub->load('owner');
         return BookClubResource::make($bookClub);
     }
-
     /**
      * Display the specified resource.
      */
     public function show(BookClub $bookClub)
     {
+        $bookClub->load('owner');
+
         return BookClubResource::make($bookClub);
     }
 
@@ -43,8 +65,16 @@ class BookClubController extends Controller
      */
     public function update(UpdateBookClubRequest $request, BookClub $bookClub)
     {
-        $bookClub->update($request->validated());
-        return BookClubResource::make($bookClub);
+        try {
+            $this->authorize('update', $bookClub);
+
+            $bookClub->update($request->validated());
+            $bookClub->load('owner');
+
+            return BookClubResource::make($bookClub);
+        } catch (AuthorizationException $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
+        }
     }
 
     /**
@@ -52,8 +82,12 @@ class BookClubController extends Controller
      */
     public function destroy(BookClub $bookClub)
     {
-        $bookClub->delete();
-
-        return response()->noContent();
+        try {
+            $this->authorize('delete', $bookClub);
+            $bookClub->delete();
+            return response()->noContent();
+        } catch (AuthorizationException $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
+        }
     }
 }

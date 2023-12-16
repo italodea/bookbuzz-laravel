@@ -16,4 +16,9 @@ class BookClub extends Model
         'owner_id',
         'is_private',
     ];
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
 }
