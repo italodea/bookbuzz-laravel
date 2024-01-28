@@ -42,4 +42,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function bookClubs()
+    {
+        return $this->belongsToMany(BookClub::class, 'book_club_user', 'user_id', 'book_club_id');
+    }
 }

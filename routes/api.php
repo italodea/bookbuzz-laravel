@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\V1\AccessTokenController;
-use App\Http\Controllers\Api\V1\BookClubController;
+use App\Http\Controllers\Api\V1\BookClub\BookClubController;
+use App\Http\Controllers\Api\V1\BookClub\JoinBookClubController;
+use App\Http\Controllers\Api\V1\BookClub\LeaveBookClubController;
+use App\Http\Controllers\Api\V1\BookPoll\BookPollController;
 use App\Http\Controllers\Api\V1\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -23,10 +24,11 @@ Route::prefix('v1')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('v1')->group(function () {
-        Route::middleware('auth:sanctum')->group(function () {
-            Route::get('/current-user', [UserController::class, 'getCurrentUserData']);
-            Route::get('/check-token-validity', [UserController::class, 'checkTokenValidity']);
-            Route::apiResource('/bookClub', BookClubController::class);
-        });
+        Route::get('/current-user', [UserController::class, 'getCurrentUserData']);
+        Route::get('/check-token-validity', [UserController::class, 'checkTokenValidity']);
+        Route::apiResource('/bookClub', BookClubController::class);
+        Route::patch('/bookClub/{bookClub}/join', JoinBookClubController::class);
+        Route::patch('/bookClub/{bookClub}/leave', LeaveBookClubController::class);
+        Route::apiResource('/bookClub/{bookClub}/poll', BookPollController::class);
     });
 });

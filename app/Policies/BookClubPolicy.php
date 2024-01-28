@@ -63,4 +63,26 @@ class BookClubPolicy
     {
         return $user->id === $bookClub->owner_id;
     }
+
+    /**
+     * Determine whether the user can join the book club.
+     */
+    public function join(User $user, BookClub $bookClub)
+    {
+        if ($user->id === $bookClub->owner_id) {
+            return false;
+        }
+        return !$bookClub->participants()->where('user_id', $user->id)->exists();
+    }
+
+    /**
+     * Determine whether the user can leave the book club.
+     */
+    public function leave(User $user, BookClub $bookClub)
+    {
+        if ($user->id === $bookClub->owner_id) {
+            return false;
+        }
+        return $bookClub->participants()->where('user_id', $user->id)->exists();
+    }
 }

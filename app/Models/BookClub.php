@@ -21,4 +21,9 @@ class BookClub extends Model
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
+
+    public function participants()
+    {
+        return $this->belongsToMany(User::class, 'book_club_user', 'book_club_id', 'user_id');
+    }
 }

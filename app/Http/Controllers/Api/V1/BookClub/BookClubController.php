@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\BookClub;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookClub\FindRequest;
@@ -16,6 +16,7 @@ class BookClubController extends Controller
     /**
      * Display a listing of the resource.
      */
+    
     public function index(FindRequest $request)
     {
         $query = BookClub::with('owner');
@@ -66,7 +67,7 @@ class BookClubController extends Controller
     public function update(UpdateRequest $request, BookClub $bookClub)
     {
         try {
-            $this->authorize('update', $bookClub);
+            $this->checkAuthorization('update', $bookClub);
 
             $bookClub->update($request->validated());
             $bookClub->load('owner');
@@ -83,7 +84,7 @@ class BookClubController extends Controller
     public function destroy(BookClub $bookClub)
     {
         try {
-            $this->authorize('delete', $bookClub);
+            $this->checkAuthorization('delete', $bookClub);
             $bookClub->delete();
             return response()->noContent();
         } catch (AuthorizationException $e) {
