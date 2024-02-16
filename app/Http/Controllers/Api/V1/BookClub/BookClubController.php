@@ -16,7 +16,7 @@ class BookClubController extends Controller
     /**
      * Display a listing of the resource.
      */
-    
+
     public function index(FindRequest $request)
     {
         $query = BookClub::with('owner');
@@ -42,11 +42,14 @@ class BookClubController extends Controller
     public function store(StoreRequest $request)
     {
         $validatedData = $request->validated();
-
         $validatedData['owner_id'] = Auth::id();
 
         $bookClub = BookClub::create($validatedData);
         $bookClub->load('owner');
+
+        $member = new JoinBookClubController();
+        $member->__invoke($bookClub);
+
         return BookClubResource::make($bookClub);
     }
     /**
@@ -55,6 +58,7 @@ class BookClubController extends Controller
     public function show(BookClub $bookClub)
     {
         $bookClub->load('owner');
+        $bookClub->load('participants');
 
         return BookClubResource::make($bookClub);
     }

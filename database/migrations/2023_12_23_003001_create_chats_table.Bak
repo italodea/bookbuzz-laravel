@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('chats', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->integer('page');
+            $table->string('charpter');
+            $table->string('google_book_id');
+            $table->unsignedBigInteger('book_club_id');
+            $table->unsignedBigInteger('user_id');
+            $table->jsonb('book')->nullable();
+            $table->timestamps();
+
+            $table->foreign('book_club_id')->references('id')->on('book_clubs')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('chats');
+    }
+
+    
+};

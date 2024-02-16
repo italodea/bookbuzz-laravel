@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\BookClub;
+use App\Models\BookClubUser;
 use App\Models\BookPoll;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -22,7 +23,9 @@ class BookPoolPolicy
      */
     public function view(User $user, BookPoll $bookPool): bool
     {
-        return true;
+        $member = BookClubUser::where('user_id', '=', $user->id)->where('book_club_id', '=', $bookPool->book_club_id);
+
+        return $member->count() > 0;
     }
 
     /**
